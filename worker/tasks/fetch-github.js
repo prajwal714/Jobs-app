@@ -35,7 +35,7 @@ async function fetchGithub()
         const jobTitle=job.title.toLowerCase();
        
 
-        if(jobTitle.includes('senior')||jobTitle.includes('manager')||jobTitle.includes('sr.')||jobTitle.includes('architect'))
+        if(jobTitle.includes('senior')||jobTitle.includes('manager')||jobTitle.includes('sr.')||jobTitle.includes('architect')||jobTitle.includes("expert"))
         return false;
 
         return true;
@@ -43,7 +43,7 @@ async function fetchGithub()
 
     console.log("filtered down to: ",jrJobs.length);
     //set in redis
-    const success=await setAsync('github', JSON.stringify(allJobs));
+    const success=await setAsync('github', JSON.stringify(jrJobs));
     console.log({success});
 }
 module.exports=fetchGithub;
