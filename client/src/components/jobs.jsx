@@ -9,53 +9,83 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import Job from './job'
+import JobModal from './jobModal';
 
-const maxSteps=6;
+const maxSteps = 6;
 
 
 
-export default function Jobs({jobs}){
+export default function Jobs({ jobs }) {
 
-    
-        const [activeStep, setActiveStep] = React.useState(0);
+    const numJobs = jobs.length;
+    const numPages = Math.ceil(numJobs / 50);
 
-        const handleNext = () => {
-            setActiveStep(prevActiveStep => prevActiveStep + 1);
-          };
-        
-          const handleBack = () => {
-            setActiveStep(prevActiveStep => prevActiveStep - 1);
-          };
-        console.log(jobs[0])
-        return ( 
-            <div className="jobs">
 
-            <Typography variant="h4" component="h1">
+    //jobs of page
+    const [activeStep, setActiveStep] = React.useState(0);
+    const jobsOnPage = jobs.slice(activeStep * 50, activeStep * 50 + 50);
+
+    //jobs modal
+    const [open, setOpen] = React.useState(false);
+    const [selectedJob,selectJob]=React.useState({});
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleNext = () => {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep(prevActiveStep => prevActiveStep - 1);
+    };
+    console.log(jobs[0])
+    return (
+        <div className="jobs">
+            <JobModal 
+            open={open} 
+            job={selectedJob}
+            handleClickOpen={handleClose}
+            handleClose={handleClose}
+            ></JobModal>
+
+
+
+            <Typography variant="h3" component="h1">
                 All the Entry level Jobs are listed here:
             </Typography>
+            <Typography varient="h4">
+                Found {numJobs} Jobs:
+            </Typography>
             {
-                jobs.map(job=><Job  job={job}></Job>)
+                jobsOnPage.map(job => <Job job={job} onClick={()=>{selectJob(job); handleClickOpen();}}></Job>)
             }
+            <div>
+                Page {activeStep + 1} of {numPages}
+            </div>
             <MobileStepper
-                steps={maxSteps}
+                steps={numPages}
                 position="static"
                 variant="text"
                 activeStep={activeStep}
                 backButton={
-                <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-                   <KeyboardArrowLeft /> 
-                    Back
-                </Button>
-        }
-                nextButton={
-                <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-                    Next
-                    <KeyboardArrowRight /> 
+                    <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                        <KeyboardArrowLeft />
+                        Back
                 </Button>
                 }
-      />
-            </div>
-         );
-    }
+                nextButton={
+                    <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
+                        Next
+                    <KeyboardArrowRight />
+                    </Button>
+                }
+            />
+        </div>
+    );
+}
 
- 
+
